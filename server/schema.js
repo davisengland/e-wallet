@@ -14,14 +14,16 @@ const typeDefs = gql`
         amount: Int!
     }
     type Expense{
+        exp_id: String!
         sub_id: String!
         amount: Int
         month: Int
         category: String
+        date: String
     }
     type Mutation{
         update_worth(sub_id:String, amount:Int): Worth
-        add_expense(sub_id:String, amount:Int, month:Int, category:String): Expense
+        add_expense(sub_id:String, amount:Int, month:Int, category:String, date:String): Expense
     }
 `
 
@@ -58,7 +60,7 @@ const resolvers = {
             return result
         },
         add_expense: async (obj, args, context) => {
-            const result = await context.db.expenses.add_expense(args.sub_id, args.amount, args.month, args.category)
+            const result = await context.db.expenses.add_expense(args.sub_id, args.amount, args.month, args.category, args.date)
             return result
         }
     }

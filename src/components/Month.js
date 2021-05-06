@@ -7,10 +7,19 @@ import Dropdown from 'react-bootstrap/Dropdown'
 import './Month.css'
 
 const ADD_EXPENSE = gql`
-    mutation Expense($sub_id:String, $amount:Int, $month:Int, $category:String) {
-        add_expense(sub_id:$sub_id, amount:$amount, month:$month, category:$category){
+    mutation Expense($sub_id:String, $amount:Int, $month:Int, $category:String, $date:String) {
+        add_expense(sub_id:$sub_id, amount:$amount, month:$month, category:$category, date:$date){
             amount
             month
+        }
+    }
+`
+const GET_MONTHLY_EXPENSES = gql`
+    query Expense($sub_id:String, $month:Int) {
+        get_expenses(sub_id:$sub_id, month:$month){
+            amount
+            category
+            date
         }
     }
 `
@@ -19,14 +28,32 @@ const Month= (props) => {
 
     const [expAmountInput, setExpAmountInput] = useState('')
     const [categoryInput, setCategoryInput] = useState('')
+    let today = new Date()
 
     const { user, isAuthenticated } = useAuth0()
+
+    const { loading:loading_expenses, data:expenses } = useQuery(GET_MONTHLY_EXPENSES, { variables: {sub_id: user.sub, month: (today.getMonth() + 1)}})
 
     const [addExpense, {loading:adding_expense, data:newExpense}] = useMutation(ADD_EXPENSE)
 
     const addExpenseFn = () => {
-        let today = new Date()
-        addExpense({variables: {sub_id: user.sub, amount: +expAmountInput, month: (today.getMonth() + 1), category:categoryInput}})
+        console.log(today.toISOString().split('T')[0])
+        addExpense({variables: {sub_id: user.sub, amount: +expAmountInput, month: (today.getMonth() + 1), category:categoryInput, date: today.toISOString().split('T')[0]}})
+    }
+
+    const renderSpending = () => {
+        if(expenses) {
+            let expensesMap = expenses.get_expenses.map((elem,i) => {
+                return (
+                    <div key={i}>
+                        {elem.amount}
+                        {elem.category}
+                        {elem.date.slice(6)}
+                    </div>
+                )
+            })
+            return expensesMap
+        }
     }
 
     return (
@@ -80,6 +107,7 @@ const Month= (props) => {
             </Dropdown>
             <h3>{categoryInput}</h3>
             <button onClick={() => addExpenseFn()}>Add Expense</button>
+            {renderSpending()}
         </div>
     )
 }

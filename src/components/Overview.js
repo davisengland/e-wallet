@@ -70,7 +70,6 @@ const Overview = (props) => {
    const renderSpending = () => {
        if(expenses) {
            let total = expenses.get_expenses.reduce((total, obj) => obj.amount + total,0)
-           console.log(total)
         //    let expensesMap = expenses.get_expenses.map(elem => )
            return <h1>{total}</h1>
        }
