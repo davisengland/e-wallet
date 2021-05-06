@@ -12,10 +12,10 @@ export default (
     <AuthenticatedRoute exact path="/">
         <Overview/>
     </AuthenticatedRoute>
-    {/* <AuthenticatedRoute path="/month">
+    <AuthenticatedRoute path="/month">
         <Month/>
     </AuthenticatedRoute>
-    <AuthenticatedRoute path="/settings">
+    {/* <AuthenticatedRoute path="/settings">
         <Settings/>
     </AuthenticatedRoute> */}
     <AuthenticatedRoute path="/profile">

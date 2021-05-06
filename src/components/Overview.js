@@ -4,6 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react'
 import Header from './Header'
 import { useQuery, useMutation, gql } from '@apollo/client'
 import { update_worth } from '../redux/reducers/worthReducer'
+import './Overview.css'
 
 const GET_PROFILE = gql`
     query Profile($sub_id:String) {
@@ -29,15 +30,20 @@ const UPDATE_NET_WORTH = gql`
     }
 `
 
+const GET_MONTHLY_EXPENSES = gql`
+    query Expense($sub_id:String, $month:Int) {
+        get_expenses(sub_id:$sub_id, month:$month){
+            amount
+        }
+    }
+`
+
 const Overview = (props) => {
 
-    // useEffect(() => {
-    //     if(net_worth) {
-    //         props.update_worth(net_worth.get_worth.amount)
-    //     }
-    // })
-    // const [worth, setWorth] = useState(0)
     const [worthInput, setWorthInput] = useState('')
+    const [expAmountInput, setExpAmountInput] = useState('')
+    const [categoryInput, setCategoryInput] = useState('')
+    let today = new Date()
 
     const { user, isAuthenticated } = useAuth0()
 
@@ -45,11 +51,12 @@ const Overview = (props) => {
 
     const { loading:loading_worth, data:net_worth } = useQuery(GET_NET_WORTH, { variables: {sub_id: user.sub, amount: 0}})
 
+    const { loading:loading_expenses, data:expenses } = useQuery(GET_MONTHLY_EXPENSES, { variables: {sub_id: user.sub, month: (today.getMonth() + 1)}})
+
     const [updateNetWorth, {loading:updating_worth, data:updated_data}] = useMutation(UPDATE_NET_WORTH)
 
-    const handleClick = () => {
+    const setNetWorth = () => {
         props.update_worth(worthInput)
-        console.log(props.worthReducer.worth)
         updateNetWorth({variables: {sub_id: user.sub, amount: +worthInput}})
         setWorthInput('')
     }
@@ -60,13 +67,24 @@ const Overview = (props) => {
        }
    }
 
+   const renderSpending = () => {
+       if(expenses) {
+           let total = expenses.get_expenses.reduce((total, obj) => obj.amount + total,0)
+           console.log(total)
+        //    let expensesMap = expenses.get_expenses.map(elem => )
+           return <h1>{total}</h1>
+       }
+   }
+
     return (
         <div>
             <Header/>
             <h1>Net Worth</h1>
             {renderNetWorth()}
-            <input placeholder='net worth' value={worthInput} onChange={e => setWorthInput(e.target.value)}/>
-            <button onClick={() => handleClick()}>Add</button>
+            <input placeholder='amount' value={worthInput} onChange={e => setWorthInput(e.target.value)}/>
+            <button onClick={() => setNetWorth()}>Update</button>
+            <h1>Spending</h1>
+            {renderSpending()}
         </div>
     )
 }

@@ -21,8 +21,7 @@ CREATE TABLE income(
 CREATE TABLE expenses(
   sub_id VARCHAR(255) REFERENCES profile(sub_id),
   amount INT,
-  date DATE,
-  time TIME,
+  month Int,
   category VARCHAR(255)
 );
 
