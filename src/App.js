@@ -6,11 +6,11 @@ import Routes from './Routes'
 import { useAuth0 } from '@auth0/auth0-react'
 
 function App() {
-  const { user, isAuthenticated } = useAuth0()
+  const { user, isAuthenticated, isLoading } = useAuth0()
 
   return (
     <div>
-        {Routes}
+        {!isLoading ? Routes : null}
     </div>
   );
 }

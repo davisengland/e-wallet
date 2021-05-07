@@ -1,10 +1,10 @@
-import worthReducer from "./reducers/worthReducer";
+import netWorthReducer from "./reducers/netWorthReducer";
 import expensesReducer from './reducers/expensesReducer'
 import { devToolsEnhancer } from "redux-devtools-extension";
 import { createStore, combineReducers } from "redux";
 
 const rootReducer = combineReducers({
-  worthReducer,
+  netWorthReducer,
   expensesReducer
 });
 

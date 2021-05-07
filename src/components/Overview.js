@@ -3,8 +3,10 @@ import { connect } from "react-redux"
 import { useAuth0 } from '@auth0/auth0-react'
 import Header from './Header'
 import { useQuery, useMutation, gql } from '@apollo/client'
-import { update_worth } from '../redux/reducers/worthReducer'
+import { updateNetWorth, getNetWorth } from '../redux/reducers/netWorthReducer'
+import { getExpenses } from '../redux/reducers/expensesReducer'
 import './Overview.css'
+import { extendResolversFromInterfaces } from 'graphql-tools'
 
 const GET_PROFILE = gql`
     query Profile($sub_id:String) {
@@ -15,16 +17,16 @@ const GET_PROFILE = gql`
 `
 
 const GET_NET_WORTH = gql`
-    query Worth($sub_id:String, $amount:Int) {
-        get_worth(sub_id:$sub_id, amount:$amount){
+    query NetWorth($sub_id:String, $amount:Int) {
+        get_net_worth(sub_id:$sub_id, amount:$amount){
             amount
         }
     }
 `
 
 const UPDATE_NET_WORTH = gql`
-    mutation Worth($sub_id:String, $amount:Int) {
-        update_worth(sub_id:$sub_id, amount:$amount){
+    mutation NetWorth($sub_id:String, $amount:Int) {
+        update_net_worth(sub_id:$sub_id, amount:$amount){
             amount
         }
     }
@@ -40,7 +42,7 @@ const GET_MONTHLY_EXPENSES = gql`
 
 const Overview = (props) => {
 
-    const [worthInput, setWorthInput] = useState('')
+    const [netWorthInput, setNetWorthInput] = useState('')
     const [expAmountInput, setExpAmountInput] = useState('')
     const [categoryInput, setCategoryInput] = useState('')
     let today = new Date()
@@ -49,28 +51,38 @@ const Overview = (props) => {
 
     const { loading:loading_profile, data:profile_data } = useQuery(GET_PROFILE, { variables: {sub_id: user.sub}})
 
-    const { loading:loading_worth, data:net_worth } = useQuery(GET_NET_WORTH, { variables: {sub_id: user.sub, amount: 0}})
+    const { loading:loading_net_worth, data:net_worth_data } = useQuery(GET_NET_WORTH, { variables: {sub_id: user.sub, amount: 0}})
 
     const { loading:loading_expenses, data:expenses } = useQuery(GET_MONTHLY_EXPENSES, { variables: {sub_id: user.sub, month: (today.getMonth() + 1)}})
 
-    const [updateNetWorth, {loading:updating_worth, data:updated_data}] = useMutation(UPDATE_NET_WORTH)
+    useEffect(() => {
+        if(net_worth_data) {
+            props.getNetWorth(net_worth_data.get_net_worth.amount)
+        }
+        if(expenses) {
+            props.getExpenses(expenses.get_expenses)
+        }
+    }, [net_worth_data, expenses])
+
+    const [update_net_worth, {loading:updating_net_worth, data:updated_net_worth}] = useMutation(UPDATE_NET_WORTH)
 
     const setNetWorth = () => {
-        props.update_worth(worthInput)
-        updateNetWorth({variables: {sub_id: user.sub, amount: +worthInput}})
-        setWorthInput('')
+        props.updateNetWorth(netWorthInput)
+        update_net_worth({variables: {sub_id: user.sub, amount: +netWorthInput}})
+        setNetWorthInput('')
     }
 
    const renderNetWorth = () => {
-       if(net_worth) {
-           return <h1>{net_worth.get_worth.amount}</h1>
+       if(net_worth_data && !updated_net_worth) {
+           return <h1>{net_worth_data.get_net_worth.amount}</h1>
+       } else if(updated_net_worth) {
+           return <h1>{updated_net_worth.update_net_worth.amount}</h1>
        }
    }
 
    const renderSpending = () => {
-       if(expenses) {
-           let total = expenses.get_expenses.reduce((total, obj) => obj.amount + total,0)
-        //    let expensesMap = expenses.get_expenses.map(elem => )
+       if(props.expensesReducer.expenses) {
+           let total = props.expensesReducer.expenses.reduce((total, obj) => obj.amount + total,0)
            return <h1>{total}</h1>
        }
    }
@@ -80,7 +92,7 @@ const Overview = (props) => {
             <Header/>
             <h1>Net Worth</h1>
             {renderNetWorth()}
-            <input placeholder='amount' value={worthInput} onChange={e => setWorthInput(e.target.value)}/>
+            <input placeholder='amount' value={netWorthInput} onChange={e => setNetWorthInput(e.target.value)}/>
             <button onClick={() => setNetWorth()}>Update</button>
             <h1>Spending</h1>
             {renderSpending()}
@@ -92,4 +104,4 @@ function mapStateToProps(state) {
     return state;
 }
 
-export default connect(mapStateToProps, {update_worth})(Overview)
+export default connect(mapStateToProps, {getExpenses, getNetWorth, updateNetWorth})(Overview)

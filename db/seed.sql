@@ -5,7 +5,7 @@ CREATE TABLE profile(
 );
 
 CREATE TABLE worth(
-  worth_id SERIAL
+  worth_id SERIAL,
   sub_id VARCHAR(255) UNIQUE REFERENCES profile(sub_id),
   amount INT,
   date DATE,
@@ -13,15 +13,15 @@ CREATE TABLE worth(
 );
 
 CREATE TABLE income(
-  inc_id SERIAL
+  inc_id SERIAL,
   sub_id VARCHAR(255) REFERENCES profile(sub_id),
   amount INT,
-  date DATE,
-  time TIME
+  month INT,
+  date VARCHAR(255)
 );
 
 CREATE TABLE expenses(
-  exp_id SERIAL
+  exp_id SERIAL,
   sub_id VARCHAR(255) REFERENCES profile(sub_id),
   amount INT,
   month Int,
