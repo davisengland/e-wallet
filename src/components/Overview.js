@@ -6,7 +6,6 @@ import { useQuery, useMutation, gql } from '@apollo/client'
 import { updateNetWorth, getNetWorth } from '../redux/reducers/netWorthReducer'
 import { getExpenses } from '../redux/reducers/expensesReducer'
 import './Overview.css'
-import { extendResolversFromInterfaces } from 'graphql-tools'
 
 const GET_PROFILE = gql`
     query Profile($sub_id:String) {
@@ -17,8 +16,8 @@ const GET_PROFILE = gql`
 `
 
 const GET_NET_WORTH = gql`
-    query NetWorth($sub_id:String, $amount:Int) {
-        get_net_worth(sub_id:$sub_id, amount:$amount){
+    query NetWorth($sub_id:String) {
+        get_net_worth(sub_id:$sub_id){
             amount
         }
     }
@@ -35,7 +34,10 @@ const UPDATE_NET_WORTH = gql`
 const GET_MONTHLY_EXPENSES = gql`
     query Expense($sub_id:String, $month:Int) {
         get_expenses(sub_id:$sub_id, month:$month){
+            exp_id
             amount
+            category
+            date
         }
     }
 `
@@ -43,8 +45,6 @@ const GET_MONTHLY_EXPENSES = gql`
 const Overview = (props) => {
 
     const [netWorthInput, setNetWorthInput] = useState('')
-    const [expAmountInput, setExpAmountInput] = useState('')
-    const [categoryInput, setCategoryInput] = useState('')
     let today = new Date()
 
     const { user, isAuthenticated } = useAuth0()
@@ -73,19 +73,13 @@ const Overview = (props) => {
     }
 
    const renderNetWorth = () => {
-       if(net_worth_data && !updated_net_worth) {
-           return <h1>{net_worth_data.get_net_worth.amount}</h1>
-       } else if(updated_net_worth) {
-           return <h1>{updated_net_worth.update_net_worth.amount}</h1>
-       }
+       return <h1>{props.netWorthReducer.netWorth}</h1>
    }
 
    const renderSpending = () => {
-       if(props.expensesReducer.expenses) {
-           let total = props.expensesReducer.expenses.reduce((total, obj) => obj.amount + total,0)
-           return <h1>{total}</h1>
-       }
-   }
+       let total = props.expensesReducer.expenses.reduce((total, obj) => obj.amount + total,0)
+       return <h1>{total}</h1>
+    }
 
     return (
         <div>

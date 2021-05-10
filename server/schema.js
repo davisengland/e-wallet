@@ -6,12 +6,13 @@ const typeDefs = gql`
     }
     type Query{
         profile(sub_id:String): Profile
-        get_net_worth(sub_id:String, amount:Int): NetWorth
+        get_net_worth(sub_id:String): NetWorth
         get_expenses(sub_id:String, month:Int): [Expense]
+        get_income(sub_id:String, month:Int): [Income]
     }
     type NetWorth{
         sub_id: String!
-        amount: Int!
+        amount: Int
     }
     type Expense{
         exp_id: String
@@ -22,7 +23,7 @@ const typeDefs = gql`
         date: String
     }
     type Income{
-        inc_id: String!
+        inc_id: String
         sub_id: String!
         amount: Int
         month: Int
@@ -32,6 +33,8 @@ const typeDefs = gql`
         update_net_worth(sub_id:String, amount:Int): NetWorth
         add_expense(sub_id:String, amount:Int, month:Int, category:String, date:String): Expense
         add_income(sub_id:String, amount:Int, month:Int, date:String): Income
+        delete_expense(exp_id:String): Expense
+        delete_income(inc_id:String): Income
     }
 `
 
@@ -51,13 +54,16 @@ const resolvers = {
         get_net_worth: async (obj, args, context) => {
             const [result] = await context.db.worth.get_net_worth(args.sub_id)
             if(!result) {
-                const [newResult] = await context.db.worth.add_net_worth(args.sub_id, args.amount)
-                return newResult
+                alert('Add net worth to begin')
             }
             return result
         },
         get_expenses: async (obj, args, context) => {
             const result = await context.db.expenses.get_expenses_by_month(args.sub_id, args.month)
+            return result
+        },
+        get_income: async (obj, args, context) => {
+            const result = await context.db.income.get_income_by_month(args.sub_id, args.month)
             return result
         }
     },
@@ -71,9 +77,18 @@ const resolvers = {
             return result
         },
         add_income: async (obj, args, context) => {
-            const result = await context.db.expenses.add_income(args.sub_id, args.amount, args.month, args.date)
-            return results
+            const result = await context.db.income.add_income(args.sub_id, args.amount, args.month, args.date)
+            return result
+        },
+        delete_expense: async (obj, args, context) => {
+            const result = await context.db.expenses.delete_expense(args.exp_id)
+            return result
+        },
+        delete_income: async (obj, args, context) => {
+            const result = await context.db.income.delete_income(args.inc_id)
+            return result
         }
+
     }
 }
 
