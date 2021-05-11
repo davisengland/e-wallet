@@ -7,6 +7,7 @@ import Dropdown from 'react-bootstrap/Dropdown'
 import { getExpenses } from '../redux/reducers/expensesReducer'
 import { getIncome } from '../redux/reducers/incomeReducer'
 import { updateNetWorth, getNetWorth } from '../redux/reducers/netWorthReducer'
+import { getBudgets } from '../redux/reducers/budgetReducer'
 import './Month.css'
 
 const ADD_EXPENSE = gql`
@@ -22,6 +23,14 @@ const ADD_INCOME = gql`
         add_income(sub_id:$sub_id, amount:$amount, month:$month, date:$date){
             amount
             month
+        }
+    }
+`
+
+const ADD_BUDGET = gql`
+    mutation Budget($sub_id:String, $amount:Int, $category:String) {
+        add_budget(sub_id:$sub_id, amount:$amount, category:$category){
+            budget_id
         }
     }
 `
@@ -47,6 +56,16 @@ const GET_MONTHLY_INCOME = gql`
     }
 `
 
+const GET_BUDGETS = gql`
+    query Budget($sub_id:String) {
+        get_budgets(sub_id:$sub_id){
+            budget_id
+            amount
+            category
+        }
+    }
+`
+
 const DELETE_EXPENSE = gql`
     mutation Expense($exp_id: String) {
         delete_expense(exp_id:$exp_id){
@@ -59,6 +78,14 @@ const DELETE_INCOME = gql`
     mutation Income($inc_id: String) {
         delete_income(inc_id:$inc_id){
             inc_id
+        }
+    }
+`
+
+const DELETE_BUDGET = gql`
+    mutation Budget($budget_id: String) {
+        delete_budget(budget_id:$budget_id){
+            budget_id
         }
     }
 `
@@ -85,12 +112,16 @@ const Month= (props) => {
     const [expAmountInput, setExpAmountInput] = useState('')
     const [incAmountInput, setIncAmountInput] = useState('')
     const [categoryInput, setCategoryInput] = useState('')
+    const [budgetInput, setBudgetInput] = useState('')
+    const [budgetCategory, setBudgetCategory] = useState('')
 
     const { loading:loading_expenses, data:expenses_data, refetch:refetch_expenses } = useQuery(GET_MONTHLY_EXPENSES, { variables: {sub_id: user.sub, month: (today.getMonth() + 1)}})
 
     const { loading:loading_income, data:income_data, refetch:refetch_income } = useQuery(GET_MONTHLY_INCOME, { variables: {sub_id: user.sub, month: (today.getMonth() + 1)}})
 
     const { loading:loading_net_worth, data:net_worth_data, refetch:refetch_net_worth } = useQuery(GET_NET_WORTH, { variables: {sub_id: user.sub}})
+
+    const { loading:loading_budget, data:budget_data, refetch:refetch_budget } = useQuery(GET_BUDGETS, { variables: {sub_id: user.sub}})
     
     useEffect(() => {
         if(expenses_data) {
@@ -100,14 +131,19 @@ const Month= (props) => {
             props.getIncome(income_data.get_income)
         }
         if(net_worth_data) {
-            props.getNetWorth(net_worth_data.get_net_worth)
+            props.getNetWorth(net_worth_data.get_net_worth.amount)
         }
-    }, [expenses_data, income_data, net_worth_data])
+        if(budget_data) {
+            props.getBudgets(budget_data.get_budgets)
+        }
+    }, [expenses_data, income_data, net_worth_data, budget_data])
 
     const [addExpense, {loading:adding_expense, data:new_expenses}] = useMutation(ADD_EXPENSE)
     const [deleteExpense, {loading:deleting_expense, data:deleted_expense}] = useMutation(DELETE_EXPENSE)
     const [addIncome, {loading:adding_income, data:newIncome}] = useMutation(ADD_INCOME)
+    const [addBudget, {loading:adding_budget, data:newBudget}] = useMutation(ADD_BUDGET)
     const [deleteIncome, {loading:deleting_income}] = useMutation(DELETE_INCOME)
+    const [deleteBudget, {loading:deleting_budget}] = useMutation(DELETE_BUDGET)
     const [updateNetWorth, {loading:updating_net_worth}] = useMutation(UPDATE_NET_WORTH)
 
     const addExpenseFn = () => {
@@ -119,6 +155,7 @@ const Month= (props) => {
         addExpense({variables: {sub_id: user.sub, amount: +expAmountInput, month: (today.getMonth() + 1), category:categoryInput, date: today.toISOString().split('T')[0]}})
             .then(() => refetch_expenses())
         setExpAmountInput('')
+        setCategoryInput('')
     }
     
     const deleteExpenseFn = (exp_id, amount) => {
@@ -152,6 +189,22 @@ const Month= (props) => {
             })
     }
 
+    const addBudgetFn = () => {
+        addBudget({variables: {sub_id: user.sub, amount: +budgetInput, category: budgetCategory}})
+            .then(() => {
+                refetch_budget()
+            })
+        setBudgetInput('')
+        setBudgetCategory('')
+    }
+
+    const deleteBudgetFn = (budget_id) => {
+        deleteBudget({variables: {budget_id}})
+            .then(() => {
+                refetch_budget()
+            })
+    }
+
     const renderSpending = () => {
             let expensesMap = props.expensesReducer.expenses.map(elem => {
                 return (
@@ -181,6 +234,21 @@ const Month= (props) => {
                 )
             })
             return incomeMap
+    }
+
+    const renderBudget = () => {
+            let budgetMap = props.budgetReducer.budget.map(elem => {
+                return (
+                    <div key={elem.budget_id}>
+                        <div>
+                            {elem.amount}
+                            {elem.category}
+                        </div>
+                        <button onClick={() => deleteBudgetFn(elem.budget_id)}>X</button>
+                    </div>
+                )
+            })
+            return budgetMap
     }
 
     return (
@@ -240,6 +308,54 @@ const Month= (props) => {
             <button onClick={() => addIncomeFn()}>Add Income</button>
             {renderIncome()}
             <h1>Budget</h1>
+            <input placeholder='amount' value={budgetInput} onChange={e => setBudgetInput(e.target.value)}/>
+            <Dropdown>
+                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                    Dropdown Button
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu className='dropdown-menu'>
+                    <Dropdown.Item 
+                        className='dropdown-item' 
+                        as='button' 
+                        onClick={() => setBudgetCategory('Food/Dining')}>Food/Dining</Dropdown.Item>
+                    <Dropdown.Item 
+                        className='dropdown-item' 
+                        as='button' 
+                        onClick={() => setBudgetCategory('Auto/Transport')}>Auto/Transport</Dropdown.Item>
+                    <Dropdown.Item 
+                        className='dropdown-item' 
+                        as='button' 
+                        onClick={() => setBudgetCategory('Gifts/Donations')}>Gifts/Donations</Dropdown.Item>
+                    <Dropdown.Item 
+                        className='dropdown-item' 
+                        as='button'
+                        onClick={() => setBudgetCategory('Entertainment')}>Entertainment</Dropdown.Item>
+                    <Dropdown.Item 
+                        className='dropdown-item' 
+                        as='button'
+                        onClick={() => setBudgetCategory('Shopping')}>Shopping</Dropdown.Item>
+                    <Dropdown.Item 
+                        className='dropdown-item' 
+                        as='button'
+                        onClick={() => setBudgetCategory('Personal Care')}>Personal Care</Dropdown.Item>
+                    <Dropdown.Item 
+                        className='dropdown-item' 
+                        as='button'
+                        onClick={() => setBudgetCategory('Education')}>Education</Dropdown.Item>
+                    <Dropdown.Item 
+                        className='dropdown-item' 
+                        as='button'
+                        onClick={() => setBudgetCategory('Bills/Utilities')}>Bills/Utilities</Dropdown.Item>
+                    <Dropdown.Item 
+                        className='dropdown-item' 
+                        as='button'
+                        onClick={() => setBudgetCategory('Travel')}>Travel</Dropdown.Item>
+                </Dropdown.Menu>
+            </Dropdown>
+            <h3>{budgetCategory}</h3>
+            <button onClick={() => addBudgetFn()}>Add Budget</button>
+            {renderBudget()}
         </div>
     )
 }
@@ -248,4 +364,4 @@ function mapStateToProps(state) {
     return state;
 }
 
-export default connect(mapStateToProps, {getExpenses, getIncome, updateNetWorth, getNetWorth})(Month)
+export default connect(mapStateToProps, {getExpenses, getIncome, updateNetWorth, getNetWorth, getBudgets})(Month)

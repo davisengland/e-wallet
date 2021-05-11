@@ -30,6 +30,7 @@ CREATE TABLE expenses(
 );
 
 CREATE TABLE budget(
+  budget_id SERIAL,
   sub_id VARCHAR(255) REFERENCES profile(sub_id),
   amount INT,
   category VARCHAR(255)
