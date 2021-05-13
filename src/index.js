@@ -12,14 +12,14 @@ const Router = process.env.NODE_ENV === 'development' ? HashRouter : BrowserRout
 
 const domain = process.env.REACT_APP_AUTH0_DOMAIN
 const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID
-const client = new ApolloClient({uri:'http://localhost:4000/graphql', cache: new InMemoryCache()})
+const client = new ApolloClient({uri:'https://e-wallet.us/graphql', cache: new InMemoryCache()})
 
 ReactDOM.render(
   <Provider store={store}>
     <Auth0Provider 
       domain={domain}
       clientId={clientId}
-      redirectUri={'https://www.e-wallet.us'}>
+      redirectUri={'https://e-wallet.us'}>
       <ApolloProvider client={client}>
         <Router>
           <App />
