@@ -19,7 +19,7 @@ ReactDOM.render(
     <Auth0Provider 
       domain={domain}
       clientId={clientId}
-      redirectUri={'http://localhost:3000'}>
+      redirectUri={'https://www.e-wallet.us'}>
       <ApolloProvider client={client}>
         <Router>
           <App />
