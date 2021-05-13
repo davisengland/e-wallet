@@ -1,16 +1,13 @@
+$bp-mobile: 520px;
 
 .header-container {
     z-index: 1;
-    position: fixed;
-    left: 0px;
-    top: 0px;
-    width: 100vw;
-    height: 10vh;
-    background-color: white;
+    position: relative;
 
     .logo5 {
         height: 45px;
-        margin-bottom: 5px
+        margin-bottom: 5px;
+        margin-left: 20px
     }
     
     .header {
@@ -18,8 +15,107 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        .mobile-header {
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            width: 100vw;
+            height: 10vh;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+        }
+        .desktop-header {
+            display: none;
+        }
+        .desktop-links {
+            display: none;
+        }
+        .menu-button {
+            border: none;
+            background: none;
+            margin-right: 30px;
+        }
+        .bar {
+            width: 30px;
+            height: 6px;
+            margin: 2px;
+            background-color: rgba(0,123,255,255);
+            border-radius: 2px;
+        }
+        .none {
+            display: none;
+        }
+        @keyframes slide-out {
+            0% {
+                transform: translate(-100%)
+            }
+            100% {
+                transform: translate(0)
+            }
+        }
+        .closed {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            position: fixed;
+            right: -100px;
+            animation-name: slide-out;
+            animation-duration: 0.75s;
+            margin-top: 24vh;
+            width: 100px;
+            border-radius: 5px;
+            .bottom-link {
+                margin-bottom: 5px;
+            }
+        }
+        @keyframes slide-in {
+            0% {
+                transform: translate(100%)
+            }
+            100% {
+                transform: translate(0)
+            }
+        }
+        .open {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            position: fixed;
+            right: 0px;
+            animation-name: slide-in;
+            animation-duration: 0.75s;
+            margin-top: 24vh;
+            width: 100px;
+            border-radius: 5px;
+            .bottom-link {
+                margin-bottom: 5px;
+            }
+        }
         .links {
             margin-right: 25px;
+        }
+        @media (min-width: $bp-mobile) {
+            .mobile-header {
+                display: none;
+            }
+            .desktop-header {
+                position: fixed;
+                left: 0px;
+                top: 0px;
+                width: 100vw;
+                height: 10vh;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background-color: white;
+            }
+            .horizontal-menu {
+                display: flex;
+                align-items: center;
+                margin-right: 30px;
+            }
         }
     }
 }

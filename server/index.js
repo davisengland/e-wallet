@@ -5,8 +5,7 @@ const session = require('express-session')
 const { ApolloServer } = require('apollo-server-express')
 const { typeDefs, resolvers } = require('./schema')
 const { SERVER_PORT, CONNECTION_STRING, SESSION_SECRET } = process.env
-
-
+const path = require('path')
 
 const server = new ApolloServer({typeDefs, resolvers, context: async (req) =>  {
     
@@ -26,6 +25,11 @@ app.use(session({
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }))
+
+app.use(express.static(__dirname + '/../build'))
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../build/index.html'))
+})
 
 new Promise(resolve => app.listen({port: SERVER_PORT}, resolve))
 console.log(`Apollo server running on http://localhost:${SERVER_PORT}${server.graphqlPath}`)

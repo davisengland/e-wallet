@@ -1,3 +1,5 @@
+$bp-tablet-sm: 770px;
+
 .month {
     margin-top: 8vh;
     display: flex;
@@ -16,28 +18,30 @@
     .spending {
         width: 100%;
         display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: space-between;
-        height: 10vh;
+        justify-content: space-evenly;
+        height: 26vh;
     }
     .income {
         width: 100%;
         display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: flex-start;
-        height: 10vh;
-        .income-input {
-            margin-right: 60px;
-        }
+        justify-content: space-evenly;
+        height: 15vh;
     }
     .budget {
         width: 100%;
         display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: space-between;
-        height: 10vh;
+        justify-content: space-evenly;
+        height: 26vh;
     }
     .table-container {
+        display: flex;
+        justify-content: center;
         width: 89%;
     }
     .x-buttons {
@@ -66,6 +70,31 @@
         margin: 10px;
         .x-buttons {
             margin-top: 30px;
+        }
+    }
+    @media (min-width: $bp-tablet-sm) {
+        .container {
+            .spending {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                height: 10vh;
+            }
+            .income {
+                flex-direction: row;
+                align-items: center;
+                justify-content: flex-start;
+                height: 10vh;
+                .income-input {
+                    margin-right: 150px;
+                }
+            }
+            .budget {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                height: 10vh;
+            }
         }
     }
 }

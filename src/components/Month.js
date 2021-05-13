@@ -288,7 +288,7 @@ const Month= (props) => {
                 <section className='container'>
                     <h1>Spending</h1>
                     <div className='spending'>
-                        <input placeholder='amount' value={expAmountInput} onChange={e => setExpAmountInput(e.target.value)}/>
+                        <input className='inputs' placeholder='amount' value={expAmountInput} onChange={e => setExpAmountInput(e.target.value)}/>
                         <Dropdown>
                             <Dropdown.Toggle variant="success" id="dropdown-basic">
                                 Category
@@ -355,7 +355,7 @@ const Month= (props) => {
                 <section className='container'>
                     <h1>Income</h1>
                     <div className='income'>
-                        <input className='income-input' placeholder='amount' value={incAmountInput} onChange={e => setIncAmountInput(e.target.value)}/>
+                        <input className='income-input inputs' placeholder='amount' value={incAmountInput} onChange={e => setIncAmountInput(e.target.value)}/>
                         <Button onClick={() => addIncomeFn()}>Add Income</Button>
                     </div>
                 </section>
@@ -376,10 +376,10 @@ const Month= (props) => {
                 <section className='container'>
                     <h1>Budget</h1>
                     <div className='budget'>
-                        <input placeholder='amount' value={budgetInput} onChange={e => setBudgetInput(e.target.value)}/>
+                        <input className='inputs' placeholder='amount' value={budgetInput} onChange={e => setBudgetInput(e.target.value)}/>
                         <Dropdown>
                             <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                Dropdown Button
+                                Category
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu className='dropdown-menu'>

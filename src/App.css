@@ -1,16 +1,12 @@
 .header-container {
   z-index: 1;
-  position: fixed;
-  left: 0px;
-  top: 0px;
-  width: 100vw;
-  height: 10vh;
-  background-color: white;
+  position: relative;
 }
 
 .header-container .logo5 {
   height: 45px;
   margin-bottom: 5px;
+  margin-left: 20px;
 }
 
 .header-container .header {
@@ -26,8 +22,180 @@
           justify-content: space-between;
 }
 
+.header-container .header .mobile-header {
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  width: 100vw;
+  height: 10vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background-color: white;
+}
+
+.header-container .header .desktop-header {
+  display: none;
+}
+
+.header-container .header .desktop-links {
+  display: none;
+}
+
+.header-container .header .menu-button {
+  border: none;
+  background: none;
+  margin-right: 30px;
+}
+
+.header-container .header .bar {
+  width: 30px;
+  height: 6px;
+  margin: 2px;
+  background-color: #007bff;
+  border-radius: 2px;
+}
+
+.header-container .header .none {
+  display: none;
+}
+
+@-webkit-keyframes slide-out {
+  0% {
+    -webkit-transform: translate(-100%);
+            transform: translate(-100%);
+  }
+  100% {
+    -webkit-transform: translate(0);
+            transform: translate(0);
+  }
+}
+
+@keyframes slide-out {
+  0% {
+    -webkit-transform: translate(-100%);
+            transform: translate(-100%);
+  }
+  100% {
+    -webkit-transform: translate(0);
+            transform: translate(0);
+  }
+}
+
+.header-container .header .closed {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  position: fixed;
+  right: -100px;
+  -webkit-animation-name: slide-out;
+          animation-name: slide-out;
+  -webkit-animation-duration: 0.75s;
+          animation-duration: 0.75s;
+  margin-top: 24vh;
+  width: 100px;
+  border-radius: 5px;
+}
+
+.header-container .header .closed .bottom-link {
+  margin-bottom: 5px;
+}
+
+@-webkit-keyframes slide-in {
+  0% {
+    -webkit-transform: translate(100%);
+            transform: translate(100%);
+  }
+  100% {
+    -webkit-transform: translate(0);
+            transform: translate(0);
+  }
+}
+
+@keyframes slide-in {
+  0% {
+    -webkit-transform: translate(100%);
+            transform: translate(100%);
+  }
+  100% {
+    -webkit-transform: translate(0);
+            transform: translate(0);
+  }
+}
+
+.header-container .header .open {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  position: fixed;
+  right: 0px;
+  -webkit-animation-name: slide-in;
+          animation-name: slide-in;
+  -webkit-animation-duration: 0.75s;
+          animation-duration: 0.75s;
+  margin-top: 24vh;
+  width: 100px;
+  border-radius: 5px;
+}
+
+.header-container .header .open .bottom-link {
+  margin-bottom: 5px;
+}
+
 .header-container .header .links {
   margin-right: 25px;
+}
+
+@media (min-width: 520px) {
+  .header-container .header .mobile-header {
+    display: none;
+  }
+  .header-container .header .desktop-header {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100vw;
+    height: 10vh;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+    background-color: white;
+  }
+  .header-container .header .horizontal-menu {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    margin-right: 30px;
+  }
 }
 
 .overview {
@@ -116,13 +284,17 @@
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-  height: 10vh;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  height: 26vh;
 }
 
 .month .income {
@@ -130,17 +302,17 @@
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  -webkit-box-pack: start;
-      -ms-flex-pack: start;
-          justify-content: flex-start;
-  height: 10vh;
-}
-
-.month .income .income-input {
-  margin-right: 60px;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  height: 15vh;
 }
 
 .month .budget {
@@ -148,16 +320,26 @@
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-  height: 10vh;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  height: 26vh;
 }
 
 .month .table-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   width: 89%;
 }
 
@@ -201,6 +383,51 @@
   margin-top: 30px;
 }
 
+@media (min-width: 770px) {
+  .month .container .spending {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+    height: 10vh;
+  }
+  .month .container .income {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: start;
+        -ms-flex-pack: start;
+            justify-content: flex-start;
+    height: 10vh;
+  }
+  .month .container .income .income-input {
+    margin-right: 150px;
+  }
+  .month .container .budget {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+    height: 10vh;
+  }
+}
+
 .landing {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -212,10 +439,12 @@
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
   margin: 10px;
+}
+
+.landing .logo6 {
+  margin-right: 2px;
+  width: 300px;
 }
 
 .landing .button-container {
@@ -233,5 +462,23 @@
 
 .landing .button-container .buttons {
   width: 100px;
+}
+
+@media (min-width: 415px) {
+  .landing .logo6 {
+    width: 400px;
+  }
+}
+
+@media (min-width: 725px) {
+  .landing .logo6 {
+    width: 500px;
+  }
+}
+
+@media (min-width: 1025px) {
+  .landing .logo6 {
+    width: 50vw;
+  }
 }
 /*# sourceMappingURL=App.css.map */

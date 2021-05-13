@@ -7,7 +7,7 @@ const Landing = () => {
 
     return (
         <div className='landing'>
-            <img src={logo6} alt='logo6' width='500px'/>
+            <img src={logo6} alt='logo6' className='logo6'/>
             <div className='button-container'>
                 <LoginButton className='buttons'/>
                 <SignupButton className='buttons'/>

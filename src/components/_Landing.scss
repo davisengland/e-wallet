@@ -1,9 +1,16 @@
+$bp-tablet-lg: 1025px;
+$bp-tablet-sm: 725px;
+$bp-mobile: 415px;
+
 .landing {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     margin: 10px;
+    .logo6 {
+        margin-right: 2px;
+        width: 300px;
+    }
     .button-container {
         display: flex;
         align-items: center;
@@ -11,6 +18,21 @@
         width: 165px;
         .buttons {
             width: 100px;
+        }
+    }
+    @media (min-width: $bp-mobile) {
+        .logo6 {
+            width: 400px;
+        }
+    }
+    @media (min-width: $bp-tablet-sm) {
+        .logo6 {
+            width: 500px;
+        }
+    }
+    @media (min-width: $bp-tablet-lg) {
+        .logo6 {
+            width: 50vw;
         }
     }
 }

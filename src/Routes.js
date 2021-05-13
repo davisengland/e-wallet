@@ -14,9 +14,6 @@ export default (
     <AuthenticatedRoute exact path="/month">
         <Month/>
     </AuthenticatedRoute>
-    {/* <AuthenticatedRoute path="/settings">
-        <Settings/>
-    </AuthenticatedRoute> */}
     <AuthenticatedRoute path="/profile">
         <Profile/>
     </AuthenticatedRoute>
