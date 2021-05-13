@@ -1,7 +1,6 @@
-import { Switch, Route } from "react-router-dom";
+import { Switch } from "react-router-dom";
 import Overview from "./components/Overview";
 import Month from "./components/Month";
-import Settings from "./components/Settings";
 import Profile from "./components/Profile";
 import AuthenticatedRoute from './AuthenticatedRoute'
 import UnauthenticatedRoute from './UnauthenticatedRoute'

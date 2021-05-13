@@ -3,12 +3,12 @@ import { connect } from "react-redux"
 import { useAuth0 } from '@auth0/auth0-react'
 import Header from './Header'
 import { useQuery, useMutation, gql } from '@apollo/client'
-import Dropdown from 'react-bootstrap/Dropdown'
+import { Dropdown, Table, Button, Navbar } from 'react-bootstrap'
 import { getExpenses } from '../redux/reducers/expensesReducer'
 import { getIncome } from '../redux/reducers/incomeReducer'
 import { updateNetWorth, getNetWorth } from '../redux/reducers/netWorthReducer'
 import { getBudgets } from '../redux/reducers/budgetReducer'
-import './Month.css'
+import { Bar } from 'react-chartjs-2'
 
 const ADD_EXPENSE = gql`
     mutation Expense($sub_id:String, $amount:Int, $month:Int, $category:String, $date:String) {
@@ -107,21 +107,21 @@ const UPDATE_NET_WORTH = gql`
 `
 
 const Month= (props) => {
-    const { user, isAuthenticated } = useAuth0()
+    const { user } = useAuth0()
     let today = new Date()
     const [expAmountInput, setExpAmountInput] = useState('')
     const [incAmountInput, setIncAmountInput] = useState('')
-    const [categoryInput, setCategoryInput] = useState('')
+    const [categoryInput, setCategoryInput] = useState('Category')
     const [budgetInput, setBudgetInput] = useState('')
-    const [budgetCategory, setBudgetCategory] = useState('')
+    const [budgetCategory, setBudgetCategory] = useState('Category')
 
-    const { loading:loading_expenses, data:expenses_data, refetch:refetch_expenses } = useQuery(GET_MONTHLY_EXPENSES, { variables: {sub_id: user.sub, month: (today.getMonth() + 1)}})
+    const { data:expenses_data, refetch:refetch_expenses } = useQuery(GET_MONTHLY_EXPENSES, { variables: {sub_id: user.sub, month: (today.getMonth() + 1)}})
 
-    const { loading:loading_income, data:income_data, refetch:refetch_income } = useQuery(GET_MONTHLY_INCOME, { variables: {sub_id: user.sub, month: (today.getMonth() + 1)}})
+    const { data:income_data, refetch:refetch_income } = useQuery(GET_MONTHLY_INCOME, { variables: {sub_id: user.sub, month: (today.getMonth() + 1)}})
 
-    const { loading:loading_net_worth, data:net_worth_data, refetch:refetch_net_worth } = useQuery(GET_NET_WORTH, { variables: {sub_id: user.sub}})
+    const { data:net_worth_data, refetch:refetch_net_worth } = useQuery(GET_NET_WORTH, { variables: {sub_id: user.sub}})
 
-    const { loading:loading_budget, data:budget_data, refetch:refetch_budget } = useQuery(GET_BUDGETS, { variables: {sub_id: user.sub}})
+    const { data:budget_data, refetch:refetch_budget } = useQuery(GET_BUDGETS, { variables: {sub_id: user.sub}})
     
     useEffect(() => {
         if(expenses_data) {
@@ -138,40 +138,40 @@ const Month= (props) => {
         }
     }, [expenses_data, income_data, net_worth_data, budget_data])
 
-    const [addExpense, {loading:adding_expense, data:new_expenses}] = useMutation(ADD_EXPENSE)
+    const [addExpense, {data:new_expenses}] = useMutation(ADD_EXPENSE)
     const [deleteExpense, {loading:deleting_expense, data:deleted_expense}] = useMutation(DELETE_EXPENSE)
-    const [addIncome, {loading:adding_income, data:newIncome}] = useMutation(ADD_INCOME)
-    const [addBudget, {loading:adding_budget, data:newBudget}] = useMutation(ADD_BUDGET)
-    const [deleteIncome, {loading:deleting_income}] = useMutation(DELETE_INCOME)
-    const [deleteBudget, {loading:deleting_budget}] = useMutation(DELETE_BUDGET)
-    const [updateNetWorth, {loading:updating_net_worth}] = useMutation(UPDATE_NET_WORTH)
+    const [addIncome, {data:newIncome}] = useMutation(ADD_INCOME)
+    const [addBudget, {data:newBudget}] = useMutation(ADD_BUDGET)
+    const [deleteIncome] = useMutation(DELETE_INCOME)
+    const [deleteBudget] = useMutation(DELETE_BUDGET)
+    const [updateNetWorth] = useMutation(UPDATE_NET_WORTH)
 
     const addExpenseFn = () => {
-        updateNetWorth({variables: {sub_id: user.sub, amount: (props.netWorthReducer.netWorth.amount - +expAmountInput)}})
+        updateNetWorth({variables: {sub_id: user.sub, amount: (props.netWorthReducer.netWorth - +expAmountInput)}})
             .then(() => {
-                props.updateNetWorth(props.netWorthReducer.netWorth.amount - +expAmountInput)
+                props.updateNetWorth(props.netWorthReducer.netWorth - +expAmountInput)
                 refetch_net_worth()
             })
         addExpense({variables: {sub_id: user.sub, amount: +expAmountInput, month: (today.getMonth() + 1), category:categoryInput, date: today.toISOString().split('T')[0]}})
             .then(() => refetch_expenses())
         setExpAmountInput('')
-        setCategoryInput('')
+        setCategoryInput('Category')
     }
     
     const deleteExpenseFn = (exp_id, amount) => {
         deleteExpense({variables: {exp_id}})
         .then(() => {
-                updateNetWorth({variables: {sub_id: user.sub, amount: (props.netWorthReducer.netWorth.amount + amount)}})
-                props.updateNetWorth(props.netWorthReducer.netWorth.amount + amount)
+                updateNetWorth({variables: {sub_id: user.sub, amount: (props.netWorthReducer.netWorth + amount)}})
+                props.updateNetWorth(props.netWorthReducer.netWorth + amount)
                 refetch_expenses()
                 refetch_net_worth()
             })
     }
     
     const addIncomeFn = () => {
-        updateNetWorth({variables: {sub_id: user.sub, amount: (props.netWorthReducer.netWorth.amount + +incAmountInput)}})
+        updateNetWorth({variables: {sub_id: user.sub, amount: (props.netWorthReducer.netWorth + +incAmountInput)}})
         .then(() => {
-            props.updateNetWorth(props.netWorthReducer.netWorth.amount + +incAmountInput)
+            props.updateNetWorth(props.netWorthReducer.netWorth + +incAmountInput)
             refetch_net_worth()
         })
         addIncome({variables: {sub_id: user.sub, amount: +incAmountInput, month: (today.getMonth() + 1), date: today.toISOString().split('T')[0]}})
@@ -182,8 +182,8 @@ const Month= (props) => {
     const deleteIncomeFn = (inc_id, amount) => {
         deleteIncome({variables: {inc_id}})
             .then(() => {
-                updateNetWorth({variables: {sub_id: user.sub, amount: (props.netWorthReducer.netWorth.amount - amount)}})
-                props.updateNetWorth(props.netWorthReducer.netWorth.amount - amount)
+                updateNetWorth({variables: {sub_id: user.sub, amount: (props.netWorthReducer.netWorth - amount)}})
+                props.updateNetWorth(props.netWorthReducer.netWorth - amount)
                 refetch_income()
                 refetch_net_worth()
             })
@@ -195,7 +195,7 @@ const Month= (props) => {
                 refetch_budget()
             })
         setBudgetInput('')
-        setBudgetCategory('')
+        setBudgetCategory('Category')
     }
 
     const deleteBudgetFn = (budget_id) => {
@@ -208,14 +208,12 @@ const Month= (props) => {
     const renderSpending = () => {
             let expensesMap = props.expensesReducer.expenses.map(elem => {
                 return (
-                    <div key={elem.exp_id}>
-                        <div>
-                            {elem.amount}
-                            {elem.category}
-                            {elem.date.slice(6)}
-                        </div>
-                        <button onClick={() => deleteExpenseFn(elem.exp_id, elem.amount)}>X</button>
-                    </div>
+                    <tr key={elem.exp_id}>
+                        <td>${elem.amount}</td>
+                        <td>{elem.category}</td>
+                        <td>{elem.date.slice(6)}</td>
+                        <td><Button className='x-buttons' onClick={() => deleteExpenseFn(elem.exp_id, elem.amount)}>X</Button></td>
+                    </tr>
                 )
             })
             return expensesMap
@@ -224,13 +222,11 @@ const Month= (props) => {
     const renderIncome = () => {
             let incomeMap = props.incomeReducer.income.map(elem => {
                 return (
-                    <div key={elem.inc_id}>
-                        <div>
-                            {elem.amount}
-                            {elem.date.slice(6)}
-                        </div>
-                        <button onClick={() => deleteIncomeFn(elem.inc_id, elem.amount)}>X</button>
-                    </div>
+                    <tr key={elem.inc_id}>
+                        <td>${elem.amount}</td>
+                        <td>{elem.date.slice(6)}</td>
+                        <td><Button className='x-buttons' onClick={() => deleteIncomeFn(elem.inc_id, elem.amount)}>X</Button></td>
+                    </tr>
                 )
             })
             return incomeMap
@@ -238,13 +234,45 @@ const Month= (props) => {
 
     const renderBudget = () => {
             let budgetMap = props.budgetReducer.budget.map(elem => {
+                let categoryArr = props.expensesReducer.expenses.filter(e => e.category === elem.category)
+                let total = categoryArr.reduce((total, obj) => obj.amount + total,0)
                 return (
-                    <div key={elem.budget_id}>
-                        <div>
-                            {elem.amount}
-                            {elem.category}
-                        </div>
-                        <button onClick={() => deleteBudgetFn(elem.budget_id)}>X</button>
+                    <div className='chart-container' key={elem.budget_id}>
+                        <Bar data={{
+                            labels: [elem.category],
+                            datasets: [
+                                {
+                                    label: 'goal',
+                                    data: [elem.amount],
+                                    backgroundColor: 'rgb(134, 203, 150)'
+                                },
+                                {
+                                    label: 'current',
+                                    data: [total],
+                                    backgroundColor: 'rgb(156, 202, 252)'
+                                }
+                            ]
+                            }}
+                            options={{
+                                indexAxis: 'y',
+                                scales: {
+                                    yAxes: [
+                                      {
+                                        stacked: true,
+                                        ticks: {
+                                          beginAtZero: true,
+                                        },
+                                      },
+                                    ],
+                                    xAxes: [
+                                      {
+                                        stacked: true,
+                                      },
+                                    ]
+                                  }
+                            }}
+                        />
+                        <Button className='x-buttons' onClick={() => deleteBudgetFn(elem.budget_id)}>X</Button>
                     </div>
                 )
             })
@@ -253,109 +281,152 @@ const Month= (props) => {
 
     return (
         <div>
-            <Header/>
-            <h1>Spending</h1>
-            <input placeholder='amount' value={expAmountInput} onChange={e => setExpAmountInput(e.target.value)}/>
-            <Dropdown>
-                <Dropdown.Toggle variant="success" id="dropdown-basic">
-                    Dropdown Button
-                </Dropdown.Toggle>
+            <Navbar>
+                <Header/>
+            </Navbar>
+            <section className='month'>
+                <section className='container'>
+                    <h1>Spending</h1>
+                    <div className='spending'>
+                        <input placeholder='amount' value={expAmountInput} onChange={e => setExpAmountInput(e.target.value)}/>
+                        <Dropdown>
+                            <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                Category
+                            </Dropdown.Toggle>
 
-                <Dropdown.Menu className='dropdown-menu'>
-                    <Dropdown.Item 
-                        className='dropdown-item' 
-                        as='button' 
-                        onClick={() => setCategoryInput('Food/Dining')}>Food/Dining</Dropdown.Item>
-                    <Dropdown.Item 
-                        className='dropdown-item' 
-                        as='button' 
-                        onClick={() => setCategoryInput('Auto/Transport')}>Auto/Transport</Dropdown.Item>
-                    <Dropdown.Item 
-                        className='dropdown-item' 
-                        as='button' 
-                        onClick={() => setCategoryInput('Gifts/Donations')}>Gifts/Donations</Dropdown.Item>
-                    <Dropdown.Item 
-                        className='dropdown-item' 
-                        as='button'
-                        onClick={() => setCategoryInput('Entertainment')}>Entertainment</Dropdown.Item>
-                    <Dropdown.Item 
-                        className='dropdown-item' 
-                        as='button'
-                        onClick={() => setCategoryInput('Shopping')}>Shopping</Dropdown.Item>
-                    <Dropdown.Item 
-                        className='dropdown-item' 
-                        as='button'
-                        onClick={() => setCategoryInput('Personal Care')}>Personal Care</Dropdown.Item>
-                    <Dropdown.Item 
-                        className='dropdown-item' 
-                        as='button'
-                        onClick={() => setCategoryInput('Education')}>Education</Dropdown.Item>
-                    <Dropdown.Item 
-                        className='dropdown-item' 
-                        as='button'
-                        onClick={() => setCategoryInput('Bills/Utilities')}>Bills/Utilities</Dropdown.Item>
-                    <Dropdown.Item 
-                        className='dropdown-item' 
-                        as='button'
-                        onClick={() => setCategoryInput('Travel')}>Travel</Dropdown.Item>
-                </Dropdown.Menu>
-            </Dropdown>
-            <h3>{categoryInput}</h3>
-            <button onClick={() => addExpenseFn()}>Add Expense</button>
-            {renderSpending()}
-            <h1>Income</h1>
-            <input placeholder='amount' value={incAmountInput} onChange={e => setIncAmountInput(e.target.value)}/>
-            <button onClick={() => addIncomeFn()}>Add Income</button>
-            {renderIncome()}
-            <h1>Budget</h1>
-            <input placeholder='amount' value={budgetInput} onChange={e => setBudgetInput(e.target.value)}/>
-            <Dropdown>
-                <Dropdown.Toggle variant="success" id="dropdown-basic">
-                    Dropdown Button
-                </Dropdown.Toggle>
+                            <Dropdown.Menu className='dropdown-menu'>
+                                <Dropdown.Item 
+                                    className='dropdown-item' 
+                                    as='button' 
+                                    onClick={() => setCategoryInput('Food/Dining')}>Food/Dining</Dropdown.Item>
+                                <Dropdown.Item 
+                                    className='dropdown-item' 
+                                    as='button' 
+                                    onClick={() => setCategoryInput('Auto/Transport')}>Auto/Transport</Dropdown.Item>
+                                <Dropdown.Item 
+                                    className='dropdown-item' 
+                                    as='button' 
+                                    onClick={() => setCategoryInput('Gifts/Donations')}>Gifts/Donations</Dropdown.Item>
+                                <Dropdown.Item 
+                                    className='dropdown-item' 
+                                    as='button'
+                                    onClick={() => setCategoryInput('Entertainment')}>Entertainment</Dropdown.Item>
+                                <Dropdown.Item 
+                                    className='dropdown-item' 
+                                    as='button'
+                                    onClick={() => setCategoryInput('Shopping')}>Shopping</Dropdown.Item>
+                                <Dropdown.Item 
+                                    className='dropdown-item' 
+                                    as='button'
+                                    onClick={() => setCategoryInput('Personal Care')}>Personal Care</Dropdown.Item>
+                                <Dropdown.Item 
+                                    className='dropdown-item' 
+                                    as='button'
+                                    onClick={() => setCategoryInput('Education')}>Education</Dropdown.Item>
+                                <Dropdown.Item 
+                                    className='dropdown-item' 
+                                    as='button'
+                                    onClick={() => setCategoryInput('Bills/Utilities')}>Bills/Utilities</Dropdown.Item>
+                                <Dropdown.Item 
+                                    className='dropdown-item' 
+                                    as='button'
+                                    onClick={() => setCategoryInput('Travel')}>Travel</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                        <h3>{categoryInput}</h3>
+                        <Button onClick={() => addExpenseFn()}>Add Expense</Button>
+                    </div>
+                </section>
+                <div className='table-container'>
+                    <Table striped bordered hover>
+                        <thead>
+                            <tr>
+                                <th>Amount</th>
+                                <th>Category</th>
+                                <th>Date</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {renderSpending()}
+                        </tbody>
+                    </Table>
+                </div>
+                <section className='container'>
+                    <h1>Income</h1>
+                    <div className='income'>
+                        <input className='income-input' placeholder='amount' value={incAmountInput} onChange={e => setIncAmountInput(e.target.value)}/>
+                        <Button onClick={() => addIncomeFn()}>Add Income</Button>
+                    </div>
+                </section>
+                <div className='table-container'>
+                    <Table striped bordered hover>
+                        <thead>
+                            <tr>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {renderIncome()}
+                        </tbody>
+                    </Table>
+                </div>
+                <section className='container'>
+                    <h1>Budget</h1>
+                    <div className='budget'>
+                        <input placeholder='amount' value={budgetInput} onChange={e => setBudgetInput(e.target.value)}/>
+                        <Dropdown>
+                            <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                Dropdown Button
+                            </Dropdown.Toggle>
 
-                <Dropdown.Menu className='dropdown-menu'>
-                    <Dropdown.Item 
-                        className='dropdown-item' 
-                        as='button' 
-                        onClick={() => setBudgetCategory('Food/Dining')}>Food/Dining</Dropdown.Item>
-                    <Dropdown.Item 
-                        className='dropdown-item' 
-                        as='button' 
-                        onClick={() => setBudgetCategory('Auto/Transport')}>Auto/Transport</Dropdown.Item>
-                    <Dropdown.Item 
-                        className='dropdown-item' 
-                        as='button' 
-                        onClick={() => setBudgetCategory('Gifts/Donations')}>Gifts/Donations</Dropdown.Item>
-                    <Dropdown.Item 
-                        className='dropdown-item' 
-                        as='button'
-                        onClick={() => setBudgetCategory('Entertainment')}>Entertainment</Dropdown.Item>
-                    <Dropdown.Item 
-                        className='dropdown-item' 
-                        as='button'
-                        onClick={() => setBudgetCategory('Shopping')}>Shopping</Dropdown.Item>
-                    <Dropdown.Item 
-                        className='dropdown-item' 
-                        as='button'
-                        onClick={() => setBudgetCategory('Personal Care')}>Personal Care</Dropdown.Item>
-                    <Dropdown.Item 
-                        className='dropdown-item' 
-                        as='button'
-                        onClick={() => setBudgetCategory('Education')}>Education</Dropdown.Item>
-                    <Dropdown.Item 
-                        className='dropdown-item' 
-                        as='button'
-                        onClick={() => setBudgetCategory('Bills/Utilities')}>Bills/Utilities</Dropdown.Item>
-                    <Dropdown.Item 
-                        className='dropdown-item' 
-                        as='button'
-                        onClick={() => setBudgetCategory('Travel')}>Travel</Dropdown.Item>
-                </Dropdown.Menu>
-            </Dropdown>
-            <h3>{budgetCategory}</h3>
-            <button onClick={() => addBudgetFn()}>Add Budget</button>
-            {renderBudget()}
+                            <Dropdown.Menu className='dropdown-menu'>
+                                <Dropdown.Item 
+                                    className='dropdown-item' 
+                                    as='button' 
+                                    onClick={() => setBudgetCategory('Food/Dining')}>Food/Dining</Dropdown.Item>
+                                <Dropdown.Item 
+                                    className='dropdown-item' 
+                                    as='button' 
+                                    onClick={() => setBudgetCategory('Auto/Transport')}>Auto/Transport</Dropdown.Item>
+                                <Dropdown.Item 
+                                    className='dropdown-item' 
+                                    as='button' 
+                                    onClick={() => setBudgetCategory('Gifts/Donations')}>Gifts/Donations</Dropdown.Item>
+                                <Dropdown.Item 
+                                    className='dropdown-item' 
+                                    as='button'
+                                    onClick={() => setBudgetCategory('Entertainment')}>Entertainment</Dropdown.Item>
+                                <Dropdown.Item 
+                                    className='dropdown-item' 
+                                    as='button'
+                                    onClick={() => setBudgetCategory('Shopping')}>Shopping</Dropdown.Item>
+                                <Dropdown.Item 
+                                    className='dropdown-item' 
+                                    as='button'
+                                    onClick={() => setBudgetCategory('Personal Care')}>Personal Care</Dropdown.Item>
+                                <Dropdown.Item 
+                                    className='dropdown-item' 
+                                    as='button'
+                                    onClick={() => setBudgetCategory('Education')}>Education</Dropdown.Item>
+                                <Dropdown.Item 
+                                    className='dropdown-item' 
+                                    as='button'
+                                    onClick={() => setBudgetCategory('Bills/Utilities')}>Bills/Utilities</Dropdown.Item>
+                                <Dropdown.Item 
+                                    className='dropdown-item' 
+                                    as='button'
+                                    onClick={() => setBudgetCategory('Travel')}>Travel</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                        <h3>{budgetCategory}</h3>
+                        <Button onClick={() => addBudgetFn()}>Add Budget</Button>
+                    </div>
+                </section>
+                {renderBudget()}
+            </section>
         </div>
     )
 }

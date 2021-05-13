@@ -1,9 +1,0 @@
-.dropdown-menu {
-    display: flex;
-    flex-direction: column;
-}
-
-.dropdown-item {
-    border:none;
-    background-color: white;
-}

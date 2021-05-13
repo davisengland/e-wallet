@@ -1,0 +1,71 @@
+.month {
+    margin-top: 8vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .container {
+        width: 100vw;
+        margin: 20px;
+        border-radius: 5px;
+        background-color: rgba(242,242,242,255);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: space-evenly;
+    }
+    .spending {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 10vh;
+    }
+    .income {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        height: 10vh;
+        .income-input {
+            margin-right: 60px;
+        }
+    }
+    .budget {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 10vh;
+    }
+    .table-container {
+        width: 89%;
+    }
+    .x-buttons {
+        background-color: rgba(220,54,68,255);
+        border: rgba(220,54,68,255);
+        &:hover {
+            background-color: rgba(200,54,68,255);
+        }
+        &:active {
+            background-color: rgba(200,54,68,255);
+        }
+        &:after {
+            background-color: rgba(200,54,68,255);
+        }
+        &:active::after {
+            background-color: rgba(200,54,68,255);
+        }
+        &:visited {
+            background-color: rgba(200,54,68,255);
+        }
+    }
+    .chart-container {
+        display: flex;
+        align-items: flex-start;
+        width: 60vw;
+        margin: 10px;
+        .x-buttons {
+            margin-top: 30px;
+        }
+    }
+}
