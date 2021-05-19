@@ -16,7 +16,7 @@ Postico - https://eggerapps.at/postico/
 
 git  
 node - If v16 or later, node must be downgraded (preferably v15.12.10)  
-homebrew - `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
+homebrew - `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`  
 yarn - `brew install yarn`
 
 ### `npm run build`
