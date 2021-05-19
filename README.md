@@ -15,22 +15,19 @@ Postico - https://eggerapps.at/postico/
 ### Install  necessary environments, package managers, packages, etc.
 
 git  
-node  
-    - If v16 or later, node must be downgraded (preferably v15.12.10)  
-homebrew  
-    `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`  
-yarn 
-    - `brew install yarn`
+node - If v16 or later, node must be downgraded (preferably v15.12.10)  
+homebrew - `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`  
+yarn - `brew install yarn`
 
-### `npm run build`
+## Step 3
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Add new user to Lease-End organization on GitHub
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Once user is added, they will have access to repositories
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Clone the Lease End app and api repositories to local machine using `git clone` followed by the url of the repository that is being cloned  
+frontend - leaseend-app  
+backend - leaseend-api
 
 ### `npm run eject`
 
