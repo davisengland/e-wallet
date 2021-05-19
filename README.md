@@ -1,4 +1,4 @@
-# Getting Started with Lease End App
+# Getting Started with Lease End App/API
 
 ## Installation guidelines
 
