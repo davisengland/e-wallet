@@ -6,9 +6,8 @@
 
 ### Install developer tools
 
-VSCode - https://code.visualstudio.com/download
-
-Xcode - https://apps.apple.com/us/app/xcode/id497799835?mt=12 (for Mac users)
+VSCode - https://code.visualstudio.com/download  
+Xcode - https://apps.apple.com/us/app/xcode/id497799835?mt=12 (for Mac users)  
 Postico - https://eggerapps.at/postico/
 
 ### `npm test`
