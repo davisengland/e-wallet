@@ -26,8 +26,8 @@ yarn - `brew install yarn`
 Once user is added, they will have access to repositories
 
 Clone the Lease End app and api repositories to local machine using `git clone` followed by the url of the repository that is being cloned  
-frontend - leaseend-app  
-backend - leaseend-api
+_frontend_ - `leaseend-app`  
+_backend_ - `leaseend-api`
 
 ### `npm run eject`
 
