@@ -23,48 +23,24 @@ yarn - `brew install yarn`
 
 ### Add new user to Lease-End organization on GitHub
 
-Once user is added, they will have access to repositories
+Once user is added, they will have access to repositories.
 
-Clone the Lease End app and api repositories to local machine using `git clone` followed by the url of the repository that is being cloned  
+Clone the Lease End app and api repositories to local machine using `git clone` followed by the url of the repository that is being cloned.  
 _frontend_ - `leaseend-app`  
 _backend_ - `leaseend-api`
 
-### `npm run eject`
+## Step 4
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Install dependencies
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Install all dependencies for both of the repositories on local machine using `yarn install` in the root of each respective project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+The dependencies will be defined in the `package.json` file.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Step 5
 
-## Learn More
+### Starting leaseend-app and leaseend-api
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Run `yarn start` in both the app and api to run both local instances together.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+If working on only one of the two, the deployed version can be used for the side that is not being updated by using `yarn start:remote`.
