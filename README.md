@@ -1,18 +1,14 @@
-# Getting Started with Create React App
+# Getting Started with Lease End App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Installation guidelines
 
-## Available Scripts
+## Step 1
 
-In the project directory, you can run:
+### Install developer tools
 
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+VSCode - https://code.visualstudio.com/download
+Xcode - https://apps.apple.com/us/app/xcode/id497799835?mt=12 (for Mac users)
+Postico - https://eggerapps.at/postico/
 
 ### `npm test`
 
