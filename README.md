@@ -10,10 +10,14 @@ VSCode - https://code.visualstudio.com/download
 Xcode - https://apps.apple.com/us/app/xcode/id497799835?mt=12 (for Mac users)  
 Postico - https://eggerapps.at/postico/
 
-### `npm test`
+## Step 2
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Install  necessary environments, package managers, packages, etc.
+
+git  
+node - If v16 or later, node must be downgraded (preferably v15.12.10)  
+homebrew - `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
+yarn - `brew install yarn`
 
 ### `npm run build`
 
